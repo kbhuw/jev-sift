@@ -1,6 +1,6 @@
 {
   "name": "jev-sift",
-  "version": "0.1.0",
+  "version": "0.2.0+codex.20260918200547",
   "description": "Screen text and files with typed questions before reading them into agent context.",
   "author": {
     "name": "Kush Bhuwalka"
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Jev Sift",
     "shortDescription": "Classify first. Read selectively.",
-    "longDescription": "Batch text and file classification through your configured model endpoint. Ask boolean, choice, or score questions and get compact answers. Includes an MCP server and a reusable JavaScript core.",
+    "longDescription": "Use Jev to screen files, public webpages and tool descriptions against a query. Full contents go directly to Jev; the agent gets compact relevance judgments. Setup needs only a Jev API key.",
     "developerName": "Kush Bhuwalka",
     "category": "Productivity",
     "capabilities": [],

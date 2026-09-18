@@ -61,24 +61,39 @@ test('files: root confinement, symlinks, bounded UTF-8, binary and directory rej
     await assert.rejects(createFileReader([])('/x'),/disabled/);
   } finally {await rm(dir,{recursive:true,force:true});}
 });
-test('configuration stays explicit and secrets are not inferred',async()=>{
-  const dir=await mkdtemp(join(tmpdir(),'classify-config-'));const p=join(dir,'config.json');
+test('key-only configuration has built-in Jev endpoint and model',async()=>{
+  const dir=await mkdtemp(join(tmpdir(),'jev-config-'));const p=join(dir,'config.json');const key=join(dir,'api-key');
   try {
-    await writeFile(p,JSON.stringify({baseUrl:'http://localhost:11434/v1',model:'local',roots:[]}));
-    const c=await loadConfig({CLASSIFY_CONFIG:p});assert.equal(c.model,'local');assert.equal(c.apiKey,undefined);
-    await assert.rejects(loadConfig({CLASSIFY_CONFIG:p,CLASSIFY_BASE_URL:'http://remote.example/v1'}),/HTTPS/);
-    await assert.rejects(loadConfig({CLASSIFY_CONFIG:p,CLASSIFY_BASE_URL:'https://token@remote.example/v1'}),/credentials/);
-    await assert.rejects(loadConfig({CLASSIFY_CONFIG:join(dir,'absent')}),/does not exist/);
+    await writeFile(key,'');await writeFile(p,JSON.stringify({apiKeyFile:key,roots:[]}));
+    const c=await loadConfig({JEV_SIFT_CONFIG:p,JEV_API_KEY:'test-key'});
+    assert.equal(c.model,'jev-latest');assert.equal(c.endpoint,'https://api.typesafe.ai/v1/systemone');assert.equal(c.apiKey,'test-key');
+    assert.equal((await loadConfig({JEV_SIFT_CONFIG:p})).apiKey,'');
+    assert.equal((await loadConfig({JEV_SIFT_CONFIG:p,TYPESAFE_API_KEY:'typesafe-key'})).apiKey,'typesafe-key');
+    await writeFile(p,JSON.stringify({baseUrl:'https://other.example'}));
+    await assert.rejects(loadConfig({JEV_SIFT_CONFIG:p}),/Invalid/);
+    await assert.rejects(loadConfig({JEV_SIFT_CONFIG:join(dir,'absent')}),/does not exist/);
   }finally{await rm(dir,{recursive:true,force:true});}
 });
-test('provider uses configured model and suppresses upstream error text',async()=>{
+test('native Jev protocol: boolean maps to noul; provider metadata survives',async()=>{
   let request;
-  const evaluate=createProvider({baseUrl:'https://example.com/v1/',model:'my-model',apiKey:'test-secret'},async(url,options)=>{
-    request={url,options};return new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({answers:answer})}}],usage:{prompt_tokens:12}}));
+  const questions={relevant:{type:'boolean',instructions:'Relevant?'},kind:{type:'choice',instructions:'Kind?',criteria:{a:null,b:null}},fit:{type:'score',instructions:'Fit?',criteria:['bad','good']}};
+  const answers={relevant:{type:'noul',noul:.91},kind:{type:'choice',choice:'a',probabilities:{a:.9,b:.1},confidence:.7},fit:{type:'score',score:.8,probabilities:{'0':.2,'1':.8},confidence:.6,legend:{'0':'bad','1':'good'}}};
+  const evaluate=createProvider({apiKey:'test-secret'},async(url,options)=>{
+    request={url,options};return new Response(JSON.stringify({model:'jev-version',answers,usage:{input_tokens:12}}));
   });
   const r=await evaluate({text:'untrusted',questions});assert.equal(r.usage.inputTokens,12);
-  assert.equal(request.url,'https://example.com/v1/chat/completions');assert.equal(request.options.redirect,'error');
-  assert.equal(JSON.parse(request.options.body).model,'my-model');assert.equal(JSON.parse(JSON.parse(request.options.body).messages[1].content).text,'untrusted');
-  const failure=createProvider({baseUrl:'https://example.com',model:'x'},async()=>new Response('test-secret',{status:401}));
+  assert.equal(request.url,'https://api.typesafe.ai/v1/systemone');assert.equal(request.options.redirect,'error');
+  const body=JSON.parse(request.options.body);assert.equal(body.model,'jev-latest');assert.equal(body.state,'untrusted');assert.equal(body.questions.relevant.type,'noul');assert.equal(body.messages,undefined);
+  const validated=validateAnswers(r.answers,questions);assert.equal(validated.relevant.probability,.91);assert.equal(validated.kind.confidence,.7);assert.equal(validated.fit.probabilities['1'],.8);
+  const failure=createProvider({apiKey:'test-secret'},async()=>new Response('test-secret',{status:401}));
   await assert.rejects(failure({text:'x',questions}),e=>e.message.includes('401')&&!e.message.includes('test-secret'));
+  assert.throws(()=>createProvider({}),/API key/);
+});
+test('query shorthand handles URLs and preserves source/truncation',async()=>{
+  let seen;
+  const out=await classify({query:'find healthcare customers',items:[{id:'site',url:'https://example.com'}]},{readUrl:async()=>({url:'https://example.com/about',text:'Hospital software',truncated:true}),evaluate:async(v)=>{seen=v;return{answers:answer,model:'jev-version'};}});
+  assert.match(seen.questions.relevant.instructions,/healthcare customers/);assert.equal(seen.text,'Hospital software');
+  assert.equal(out.results[0].source,'https://example.com/about');assert.equal(out.results[0].truncated,true);assert.equal(out.results[0].model,'jev-version');
+  assert.throws(()=>inputSchema.parse({query:'x',questions,items:[{id:'a',text:'x'}]}));
+  assert.throws(()=>inputSchema.parse({query:'x',items:[{id:'a',text:'x',url:'https://example.com'}]}));
 });

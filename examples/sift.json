@@ -1,0 +1,7 @@
+{
+  "query": "Find information about MCP servers and agent tool integration",
+  "items": [
+    { "id": "website", "url": "https://modelcontextprotocol.io/introduction" },
+    { "id": "tool", "text": "search_docs: searches technical documentation for a supplied query and returns matching excerpts. Input: query (string)." }
+  ]
+}
