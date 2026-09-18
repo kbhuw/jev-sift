@@ -5,7 +5,7 @@ import { loadConfig } from './config.js';
 import { createFileReader } from './files.js';
 import { createProvider } from './provider.js';
 
-const server = new McpServer({ name: 'classify', version: '0.1.0' });
+const server = new McpServer({ name: 'jev-sift', version: '0.1.0' });
 server.registerTool('classify', {
   title: 'Classify text and files',
   description: 'Screen up to 50 text items with boolean, choice, or score questions. For files, pass paths without reading their contents into your context first. Sends content to your configured model endpoint and returns compact answers. Probabilities are uncalibrated model estimates.',

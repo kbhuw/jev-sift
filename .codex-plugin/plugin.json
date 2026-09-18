@@ -1,5 +1,5 @@
 {
-  "name": "classify",
+  "name": "jev-sift",
   "version": "0.1.0",
   "description": "Screen text and files with typed questions before reading them into agent context.",
   "author": {
@@ -7,7 +7,7 @@
   },
   "skills": "./skills/",
   "interface": {
-    "displayName": "Classify",
+    "displayName": "Jev Sift",
     "shortDescription": "Classify first. Read selectively.",
     "longDescription": "Batch text and file classification through your configured model endpoint. Ask boolean, choice, or score questions and get compact answers. Includes an MCP server and a reusable JavaScript core.",
     "developerName": "Kush Bhuwalka",
@@ -19,6 +19,6 @@
     "brandColor": "#AD8FFF"
   },
   "mcpServers": "./.mcp.json",
-  "repository": "https://github.com/kbhuw/classify",
-  "homepage": "https://github.com/kbhuw/classify"
+  "repository": "https://github.com/kbhuw/jev-sift",
+  "homepage": "https://github.com/kbhuw/jev-sift"
 }

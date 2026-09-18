@@ -1,5 +1,5 @@
 ---
-name: classify
+name: jev-sift
 description: Screen batches of documents, messages, leads, or search results with boolean, choice, and score questions before opening the most relevant items. Use when the user wants triage, routing, ranking, or relevance filtering across multiple text items.
 ---
 

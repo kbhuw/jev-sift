@@ -1,8 +1,10 @@
 {
   "mcpServers": {
-    "classify": {
+    "jev-sift": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/server.mjs"]
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/dist/server.mjs"
+      ]
     }
   }
 }

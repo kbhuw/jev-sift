@@ -1,4 +1,4 @@
-# Classify
+# Jev Sift
 
 **Classify first. Read selectively.**
 
@@ -13,16 +13,16 @@ An agent plugin that screens text and files with typed questions, so your main a
 
 The repository is the plugin package. It contains a portable Agent Plugins manifest (`plugin.json`), a bundled stdio MCP server (`mcp.json`), a Codex compatibility manifest, and a triage skill. Requires **Node.js 20+** on PATH. The checked-in `dist/server.mjs` includes its dependencies, so installed copies do not need `npm install`.
 
-Install through a local Codex marketplace that points to this repository. On the author's machine it is available as `classify@personal`. After installing, start a new task to load its tools. See the [official plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) for adding a plugin source to your own marketplace.
+Install through a local Codex marketplace that points to this repository. On the author's machine it is available as `jev-sift@personal`. After installing, start a new task to load its tools. See the [official plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) for adding a plugin source to your own marketplace.
 
 For another MCP client, add this server using the absolute path to your clone:
 
 ```json
 {
   "mcpServers": {
-    "classify": {
+    "jev-sift": {
       "command": "node",
-      "args": ["/absolute/path/to/classify/dist/server.mjs"]
+      "args": ["/absolute/path/to/jev-sift/dist/server.mjs"]
     }
   }
 }
@@ -96,3 +96,5 @@ npm test
 Tests cover validation, concurrent ordering, partial failure, cancellation, truncation, file-root containment, model-output validation, and a real MCP client/server exchange against a **local mock HTTP provider**. The smoke test copies only the bundled server to an isolated directory to verify it does not depend on the repository's `node_modules`. These tests verify transport and behavior, not real-model accuracy or provider credentials.
 
 After changing server source, rebuild and commit `dist/server.mjs` with the source. Reinstall the plugin to refresh its cached copy.
+
+The MCP operations remain `classify` and `classify_status`. Configuration still uses `CLASSIFY_*` and `~/.config/classify/config.json`, preserving existing setups.
