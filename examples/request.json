@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "id": "company-a", "text": "We build payroll software for hospitals." },
+    { "id": "company-b", "text": "We sell outdoor camping equipment." }
+  ],
+  "questions": {
+    "healthcare": { "type": "boolean", "instructions": "Does this company primarily serve healthcare?" },
+    "sector": { "type": "choice", "instructions": "Choose its primary sector.", "criteria": { "healthcare": "Serves healthcare organizations", "other": "Any other sector" } },
+    "fit": { "type": "score", "instructions": "How well does this fit a healthcare B2B sales campaign?", "criteria": ["Not relevant", "Somewhat relevant", "Strong fit"] }
+  }
+}

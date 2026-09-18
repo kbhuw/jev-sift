@@ -1,0 +1,25 @@
+{
+  "name": "classify",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Batch classification for agents, exposed as an MCP tool and a reusable function",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/classify.js"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "start": "node dist/server.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}

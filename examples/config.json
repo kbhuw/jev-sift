@@ -1,0 +1,8 @@
+{
+  "baseUrl": "http://localhost:11434/v1",
+  "model": "your-installed-model",
+  "roots": [],
+  "concurrency": 8,
+  "timeoutMs": 60000,
+  "jsonMode": true
+}

@@ -1,0 +1,24 @@
+{
+  "name": "classify",
+  "version": "0.1.0",
+  "description": "Screen text and files with typed questions before reading them into agent context.",
+  "author": {
+    "name": "Kush Bhuwalka"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Classify",
+    "shortDescription": "Classify first. Read selectively.",
+    "longDescription": "Batch text and file classification through your configured model endpoint. Ask boolean, choice, or score questions and get compact answers. Includes an MCP server and a reusable JavaScript core.",
+    "developerName": "Kush Bhuwalka",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Classify these files and show me which ones to read."
+    ],
+    "brandColor": "#AD8FFF"
+  },
+  "mcpServers": "./.mcp.json",
+  "repository": "https://github.com/kbhuw/classify",
+  "homepage": "https://github.com/kbhuw/classify"
+}
